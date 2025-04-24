@@ -46,29 +46,13 @@
 
 ## 📥 **Instalación**  
 
-### **1. Descarga Directa (APK)**  
-```bash
-wget https://prestapp.com/download/latest.apk
-```  
-
-### **2. Desde Google Play** *(Próximamente)*  
-🔗 [Enlace a Play Store](#)  
-
-### **3. Compilación desde Código** *(Para desarrolladores)*  
+### **Compilación desde Código** *(Para desarrolladores)*  
 ```bash
 flutter pub get
 flutter build apk --release
 ```  
 
----
 
-## 📲 **Demo de la Interfaz**  
-
-| **Cálculo de Préstamos** | **Tabla de Amortización** | **Gráficos de Inversión** |
-|--------------------------|---------------------------|--------------------------|
-| ![Pantalla1](https://via.placeholder.com/300x600/4CAF50/FFFFFF?text=Simulador+de+Préstamos) | ![Pantalla2](https://via.placeholder.com/300x600/2196F3/FFFFFF?text=Tabla+Amortización) | ![Pantalla3](https://via.placeholder.com/300x600/FF9800/FFFFFF?text=Análisis+de+Inversión) |  
-
----
 
 ## 📜 **Requisitos Mínimos**  
 
@@ -87,13 +71,7 @@ flutter build apk --release
 
 ---
 
-## 📩 **Contacto y Soporte**  
 
-✉ **Soporte Técnico**: [soporte@prestapp.com](mailto:soporte@prestapp.com)  
-📞 **Línea directa**: +57 301 123 4567  
-🌐 **Sitio web**: [https://prestapp.com](https://prestapp.com)  
-
----
 
 ### 🚀 **¡Descarga PrestApp y toma el control de tus finanzas!**  
 
@@ -102,4 +80,4 @@ flutter build apk --release
 --- 
 
 ✅ **¿Eres desarrollador?** ¡Contribuciones son bienvenidas!  
-🔗 **GitHub**: [github.com/prestapp](https://github.com/prestapp)
+🔗 **GitHub**: [github.com/prestapp](https://github.com/AnibalFuentes)
