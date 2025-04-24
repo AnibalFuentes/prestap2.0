@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/compuesto/services/calcularMontoFuturo.dart';
+import 'package:prestapp/screens/compuesto/services/calcularMontoFuturo.dart';
 
 class Montofuturo extends StatefulWidget {
   const Montofuturo({super.key});

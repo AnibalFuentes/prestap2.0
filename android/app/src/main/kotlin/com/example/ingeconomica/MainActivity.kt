@@ -1,4 +1,4 @@
-package com.example.ingeconomica
+package com.example.prestapp
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

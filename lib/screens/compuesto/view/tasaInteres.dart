@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/compuesto/services/calcularTasaInteres.dart';
+import 'package:prestapp/screens/compuesto/services/calcularTasaInteres.dart';
 
 class TasaInteres extends StatefulWidget {
   const TasaInteres({super.key});

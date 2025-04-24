@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/RetirosScreen.dart';
-import 'package:ingeconomica/screens/alternativa_inversion/views/evaluacion_alternativa_inversion_views.dart';
-import 'package:ingeconomica/screens/pagos/pagos.dart';
-import 'package:ingeconomica/screens/prestamos/prestamos.dart';
-import 'package:ingeconomica/screens/unidad_valor_real/views/unidad_valor_real_views.dart';
+import 'package:prestapp/screens/RetirosScreen.dart';
+import 'package:prestapp/screens/alternativa_inversion/views/evaluacion_alternativa_inversion_views.dart';
+import 'package:prestapp/screens/pagos/pagos.dart';
+import 'package:prestapp/screens/prestamos/prestamos.dart';
+import 'package:prestapp/screens/unidad_valor_real/views/unidad_valor_real_views.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ingeconomica/screens/amortizacion/view/amortizacion_view.dart';
-import 'package:ingeconomica/screens/aritmetico/views/aritmetico_views.dart';
-import 'package:ingeconomica/screens/bonos/views/bonos.dart';
-import 'package:ingeconomica/screens/compuesto/view/compuesto_view.dart';
-import 'package:ingeconomica/screens/gradiente_geometrico/view/GeometricOptionsForm.dart';
-import 'package:ingeconomica/screens/inflacion/view/inflacion.dart';
-import 'package:ingeconomica/screens/simple/services/interes_calculator.dart';
-import 'package:ingeconomica/screens/simple/view/simple_view.dart';
-import 'package:ingeconomica/screens/tir/view/tir_form.dart';
+import 'package:prestapp/screens/amortizacion/view/amortizacion_view.dart';
+import 'package:prestapp/screens/aritmetico/views/aritmetico_views.dart';
+import 'package:prestapp/screens/bonos/views/bonos.dart';
+import 'package:prestapp/screens/compuesto/view/compuesto_view.dart';
+import 'package:prestapp/screens/gradiente_geometrico/view/GeometricOptionsForm.dart';
+import 'package:prestapp/screens/inflacion/view/inflacion.dart';
+import 'package:prestapp/screens/simple/services/interes_calculator.dart';
+import 'package:prestapp/screens/simple/view/simple_view.dart';
+import 'package:prestapp/screens/tir/view/tir_form.dart';
 
 class HomeScreen extends StatefulWidget {
   final String username;

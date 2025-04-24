@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/aritmetico/views/widget.dart';
-import 'package:ingeconomica/screens/unidad_valor_real/services/calculo_unidad_valor_real.dart';
+import 'package:prestapp/screens/aritmetico/views/widget.dart';
+import 'package:prestapp/screens/unidad_valor_real/services/calculo_unidad_valor_real.dart';
 
 class UnidadValorReal extends StatefulWidget {
   const UnidadValorReal({super.key});

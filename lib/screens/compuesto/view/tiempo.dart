@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/compuesto/services/calcularTiempo.dart';
+import 'package:prestapp/screens/compuesto/services/calcularTiempo.dart';
 
 class Tiempo extends StatefulWidget {
   const Tiempo({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/tir/services/calcular_tir.dart';
+import 'package:prestapp/screens/tir/services/calcular_tir.dart';
 
 class TIRView extends StatefulWidget {
   @override

@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ingeconomica"
+    namespace = "com.example.prestapp"
     compileSdk = 34 // Establece compileSdkVersion explícitamente
 
     ndkVersion = flutter.ndkVersion
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.ingeconomica"
+        applicationId = "com.example.prestapp"
         minSdk = 23 // Establece minSdkVersion explícitamente para permitir biometría
         targetSdk = 34 // Establece targetSdkVersion explícitamente
         versionCode = flutter.versionCode

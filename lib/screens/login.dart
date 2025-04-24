@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ingeconomica/screens/biometric_auth.dart';
-import 'package:ingeconomica/screens/register.dart';
+import 'package:prestapp/screens/biometric_auth.dart';
+import 'package:prestapp/screens/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {

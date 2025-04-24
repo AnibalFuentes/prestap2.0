@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/aritmetico/services/calculo_gradiente_aritmetico.dart';
+import 'package:prestapp/screens/aritmetico/services/calculo_gradiente_aritmetico.dart';
 
 class ValorPresenteInfinito extends StatefulWidget {
   const ValorPresenteInfinito({super.key});

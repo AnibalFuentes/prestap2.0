@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/simple/services/interes_calculator.dart';
+import 'package:prestapp/screens/simple/services/interes_calculator.dart';
 
 class SimpleTiempo extends StatefulWidget {
   const SimpleTiempo({super.key});
