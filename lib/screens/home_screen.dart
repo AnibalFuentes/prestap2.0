@@ -31,9 +31,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  int _selectedOptionIndex = 0; // Index for the option list
+  int _selectedOptionIndex = 0;
   double currentAmount = 0;
   List<String> transactions = [];
+
+  // Define PrestApp's brand colors
+  final primaryYellow = Color(0xFFFFD700);
+  final darkColor = Color(0xFF333333);
+  final lightYellow = Color(0xFFFFF9C4);
+  final accentYellow = Color(0xFFFFCC00);
 
   @override
   void initState() {
@@ -73,6 +79,19 @@ class _HomeScreenState extends State<HomeScreen> {
       saveAmount();
       saveTransaction('Préstamo de \$${amount.toStringAsFixed(2)}');
     });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('¡Préstamo por \$${amount.toStringAsFixed(2)} aprobado!'),
+        backgroundColor: Colors.green[700],
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(bottom: 80, left: 20, right: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
   }
 
   void makePayment(double amount) {
@@ -82,17 +101,16 @@ class _HomeScreenState extends State<HomeScreen> {
       saveTransaction('Pago de \$${amount.toStringAsFixed(2)}');
     });
 
-    // Mostrar un SnackBar con la notificación del pago realizado
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content:
-            Text('Se ha realizado un pago de \$${amount.toStringAsFixed(2)}'),
-        duration: const Duration(seconds: 3), // Duración de la notificación
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            // Acción opcional para el botón de 'OK' en el SnackBar
-          },
+        content: Text(
+            '¡Pago de \$${amount.toStringAsFixed(2)} realizado con éxito!'),
+        backgroundColor: Colors.green[700],
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(bottom: 80, left: 20, right: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
@@ -101,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      _selectedOptionIndex = 0; // Reset to main menu when changing sections
+      _selectedOptionIndex = 0;
     });
   }
 
@@ -133,45 +151,69 @@ class _HomeScreenState extends State<HomeScreen> {
       onWillPop: () async {
         if (_selectedOptionIndex != 0) {
           setState(() {
-            _selectedOptionIndex = 0; // Go back to main menu
+            _selectedOptionIndex = 0;
           });
-          return false; // Don't leave the current screen
+          return false;
         }
-        return true; // Allow the system to handle the back button
+        return true;
       },
       child: Scaffold(
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: [
-            IndexedStack(
-              index: _selectedOptionIndex,
-              children: listOptions,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.white, lightYellow],
             ),
-            buildMovimientosScreen(),
-            buildServiciosScreen(),
-          ],
+          ),
+          child: SafeArea(
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: [
+                IndexedStack(
+                  index: _selectedOptionIndex,
+                  children: listOptions,
+                ),
+                buildMovimientosScreen(),
+                buildServiciosScreen(),
+              ],
+            ),
+          ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Inicio',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.receipt),
-              label: 'Movimientos',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view),
-              label: 'Servicios',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: const Color(0xFFD6D6D6),
-          unselectedItemColor: const Color(0xFFFFFFFF),
-          backgroundColor: const Color(0xFF232323),
-          onTap: _onItemTapped,
-          type: BottomNavigationBarType.fixed,
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: Offset(0, -5),
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_rounded),
+                label: 'Inicio',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.receipt_long_rounded),
+                label: 'Movimientos',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.grid_view_rounded),
+                label: 'Servicios',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: darkColor,
+            unselectedItemColor: Colors.grey[600],
+            backgroundColor: primaryYellow,
+            elevation: 0,
+            onTap: _onItemTapped,
+            type: BottomNavigationBarType.fixed,
+            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
@@ -179,23 +221,65 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildMainMenu(BuildContext context, InterestCalculator calculator) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 10),
-          buildBalanceCard(calculator),
           const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Bienvenido a",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  Text(
+                    "PrestApp",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: darkColor,
+                    ),
+                  ),
+                ],
+              ),
+              CircleAvatar(
+                backgroundColor: primaryYellow,
+                child: Icon(
+                  Icons.person,
+                  color: darkColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 25),
+          buildBalanceCard(calculator),
+          const SizedBox(height: 25),
+          Text(
+            "Herramientas Financieras",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: darkColor,
+            ),
+          ),
+          const SizedBox(height: 15),
           Expanded(
             child: GridView.count(
               crossAxisCount: 3,
-              mainAxisSpacing: 20,
-              crossAxisSpacing: 20,
-              padding: const EdgeInsets.all(20.0),
+              mainAxisSpacing: 15,
+              crossAxisSpacing: 15,
+              padding: const EdgeInsets.only(bottom: 20),
               children: [
                 buildGridItem(context, "I. Simple", Icons.money, 1),
-                buildGridItem(
-                    context, "I. Compuesto", Icons.trending_up, 2),
+                buildGridItem(context, "I. Compuesto", Icons.trending_up, 2),
                 buildGridItem(context, "G. Geométrico", Icons.pie_chart, 3),
                 buildGridItem(context, "G. Aritmético", Icons.calculate, 4),
                 buildGridItem(context, "Amortización", Icons.history, 5),
@@ -216,35 +300,108 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildBalanceCard(InterestCalculator calculator) {
     return Card(
-      elevation: 4,
+      elevation: 8,
+      shadowColor: primaryYellow.withOpacity(0.5),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Container(
+        width: double.infinity,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Colors.blueAccent, Colors.lightBlueAccent],
+          gradient: LinearGradient(
+            colors: [
+              primaryYellow,
+              accentYellow,
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.account_balance_wallet,
-                size: 40, color: Colors.white),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            Row(
               children: [
+                Icon(Icons.account_balance_wallet, color: darkColor, size: 24),
+                SizedBox(width: 10),
                 Text(
-                  '\$${calculator.formatNumber(currentAmount)}',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  "Saldo Disponible",
+                  style: TextStyle(
+                    color: darkColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12),
+            Text(
+              '\$${calculator.formatNumber(currentAmount)}',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: darkColor,
+              ),
+            ),
+            SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                buildQuickActionButton(
+                  "Préstamo",
+                  Icons.trending_up_rounded,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoanWidget(
+                          onLoanMade: (double loanAmount) {
+                            makeLoan(loanAmount);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                buildQuickActionButton(
+                  "Pago",
+                  Icons.payment_rounded,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Pagos(
+                          saldoDisponible: currentAmount,
+                          onPagoRealizado: (double pago, String descripcion) {
+                            makePayment(pago);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                buildQuickActionButton(
+                  "Retiro",
+                  Icons.logout_rounded,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RetirosScreen(
+                          onRetiroRealizado: (double retiroAmount) {
+                            setState(() {
+                              currentAmount -= retiroAmount;
+                              saveAmount();
+                              saveTransaction(
+                                  'Retiro de \$${retiroAmount.toStringAsFixed(2)}');
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -254,160 +411,525 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-Widget buildMovimientosScreen() {
-  return Padding(
-    padding: const EdgeInsets.all(30.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Historial de Movimientos',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  Widget buildQuickActionButton(
+      String label, IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.25),
+          borderRadius: BorderRadius.circular(12),
         ),
-        const SizedBox(height: 16),
-        Expanded(
-          child: ListView.builder(
-            itemCount: transactions.length,
-            itemBuilder: (context, index) {
-              String transaction = transactions[index];
-
-              // Usar la expresión regular para encontrar el número
-              RegExp regExp = RegExp(r'(\d+\.?\d*)');
-              Match? match = regExp.firstMatch(transaction);
-
-              if (match != null) {
-                String amountString = match.group(0)!;
-                double amount = double.parse(amountString);
-
-                // Asignar tipo de transacción (préstamo o pago)
-                String transactionType =
-                    transaction.split(' ')[0]; // Obtener tipo
-
-                // Definir colores según el tipo de transacción
-                Color tileColor = transactionType == 'Préstamo'
-                    ? Colors.green[100]!
-                    : Colors.red[100]!;
-                Color textColor =
-                    transactionType == 'Préstamo' ? Colors.green : Colors.red;
-
-                // Formatear monto para mostrar sin decimales
-                String formattedAmount = amount.toStringAsFixed(0);
-
-                return Card(
-                  elevation: 4,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  child: ListTile(
-                    title: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '$transactionType de \$',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black),
-                          ),
-                          TextSpan(
-                            text: formattedAmount,
-                            style: TextStyle(fontSize: 16, color: textColor),
-                          ),
-                        ],
-                      ),
-                    ),
-                    leading: const Icon(Icons.receipt),
-                    tileColor: tileColor,
-                  ),
-                );
-              } else {
-                // Manejar si no se encuentra un número válido
-                return ListTile(
-                  title: Text('Transacción inválida'),
-                );
-              }
-            },
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: darkColor, size: 18),
+            SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: darkColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
-}
+      ),
+    );
+  }
 
- // Inside the HomeScreen, update the buildServiciosScreen method to include the callback:
-
-Widget buildServiciosScreen() {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Center(
+  Widget buildMovimientosScreen() {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Servicios Disponibles',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          const SizedBox(height: 10),
+          Text(
+            'Historial de Movimientos',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: darkColor,
+            ),
           ),
-          const SizedBox(height: 16),
-          buildServiceCard('Hacer Préstamo', Icons.monetization_on, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LoanWidget(
-                  onLoanMade: (double loanAmount) {
-                    makeLoan(loanAmount);
-                  },
+          Text(
+            'Tus transacciones recientes',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Search bar for transactions
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 1,
+                  blurRadius: 8,
+                  offset: Offset(0, 3),
                 ),
+              ],
+            ),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Buscar transacciones',
+                prefixIcon: Icon(Icons.search, color: primaryYellow),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(vertical: 15),
               ),
-            );
-          }),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Filter chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                buildFilterChip('Todos', true),
+                buildFilterChip('Préstamos', false),
+                buildFilterChip('Pagos', false),
+                buildFilterChip('Retiros', false),
+              ],
+            ),
+          ),
+
           const SizedBox(height: 16),
-          buildServiceCard('Hacer Pago', Icons.payment, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Pagos(
-                  saldoDisponible: currentAmount,
-                  onPagoRealizado: (double pago, String descripcion) {
-                    makePayment(pago);
-                    saveTransaction(
-                        'Pago de \$${pago.toStringAsFixed(2)}: $descripcion');
-                  },
-                ),
-              ),
-            );
-          }),
-          const SizedBox(height: 16),
-          buildServiceCard('Retiros', Icons.attach_money, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RetirosScreen(
-                  onRetiroRealizado: (double retiroAmount) {
-                    setState(() {
-                      currentAmount -= retiroAmount; // Deduct amount
-                      saveAmount(); // Save new balance
-                      saveTransaction(
-                          'Retiro de \$${retiroAmount.toStringAsFixed(2)}');
-                    });
-                  },
-                ),
-              ),
-            );
-          }),
+
+          Expanded(
+            child: transactions.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.receipt_long,
+                          size: 70,
+                          color: Colors.grey[400],
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'No hay transacciones',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Tus transacciones aparecerán aquí',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: transactions.length,
+                    itemBuilder: (context, index) {
+                      // Reverse order to show newest first
+                      String transaction =
+                          transactions[transactions.length - 1 - index];
+                      RegExp regExp = RegExp(r'(\d+\.?\d*)');
+                      Match? match = regExp.firstMatch(transaction);
+
+                      if (match != null) {
+                        String amountString = match.group(0)!;
+                        double amount = double.parse(amountString);
+                        String transactionType =
+                            transaction.split(' ')[0]; // Obtener tipo
+
+                        // Icons and colors
+                        IconData transactionIcon;
+                        Color iconBgColor;
+                        Color amountColor;
+
+                        switch (transactionType) {
+                          case 'Préstamo':
+                            transactionIcon = Icons.trending_up;
+                            iconBgColor = Colors.green[100]!;
+                            amountColor = Colors.green[700]!;
+                            break;
+                          case 'Pago':
+                            transactionIcon = Icons.payment;
+                            iconBgColor = Colors.red[100]!;
+                            amountColor = Colors.red[700]!;
+                            break;
+                          case 'Retiro':
+                            transactionIcon = Icons.logout;
+                            iconBgColor = Colors.orange[100]!;
+                            amountColor = Colors.orange[700]!;
+                            break;
+                          default:
+                            transactionIcon = Icons.receipt;
+                            iconBgColor = Colors.blue[100]!;
+                            amountColor = Colors.blue[700]!;
+                        }
+
+                        String formattedAmount = amount.toStringAsFixed(0);
+                        String formattedDate =
+                            '${DateTime.now().day}/${DateTime.now().month}';
+
+                        return Container(
+                          margin: EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 8,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            leading: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: iconBgColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(transactionIcon, color: amountColor),
+                            ),
+                            title: Text(
+                              transactionType,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            subtitle: Text(
+                              'Fecha: $formattedDate',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13,
+                              ),
+                            ),
+                            trailing: Text(
+                              '\$$formattedAmount',
+                              style: TextStyle(
+                                color: amountColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    },
+                  ),
+          ),
         ],
       ),
-    ),
-  );
-}
+    );
+  }
 
-  Widget buildServiceCard(String title, IconData icon, VoidCallback onTap) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  Widget buildFilterChip(String label, bool isSelected) {
+    return Container(
+      margin: EdgeInsets.only(right: 10),
+      child: FilterChip(
+        label: Text(label),
+        selected: isSelected,
+        onSelected: (bool selected) {
+          // Implement filter logic
+        },
+        selectedColor: primaryYellow,
+        checkmarkColor: darkColor,
+        labelStyle: TextStyle(
+          color: isSelected ? darkColor : Colors.grey[700],
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
-        leading: Icon(icon),
-        trailing: const Icon(Icons.arrow_forward),
-        onTap: onTap,
+        backgroundColor: Colors.grey[200],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
+  }
+
+  Widget buildServiciosScreen() {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          Text(
+            'Servicios PrestApp',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: darkColor,
+            ),
+          ),
+          Text(
+            'Gestiona tus finanzas',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 30),
+
+          // Featured service card
+          Container(
+            width: double.infinity,
+            height: 180,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryYellow, accentYellow],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryYellow.withOpacity(0.3),
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                  offset: Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  right: -20,
+                  bottom: -20,
+                  child: Icon(
+                    Icons.attach_money,
+                    size: 150,
+                    color: Colors.white.withOpacity(0.2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Préstamo Rápido",
+                        style: TextStyle(
+                          color: darkColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Obtén financiamiento inmediato\nsin complicaciones",
+                        style: TextStyle(
+                          color: darkColor,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Spacer(),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoanWidget(
+                                onLoanMade: (double loanAmount) {
+                                  makeLoan(loanAmount);
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: darkColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                        child: Text(
+                          "SOLICITAR AHORA",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 30),
+
+          Text(
+            'Todos los servicios',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: darkColor,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Services list
+          Expanded(
+            child: ListView(
+              children: [
+                buildServiceCard(
+                  'Préstamos',
+                  Icons.trending_up_rounded,
+                  'Solicita fondos de forma rápida',
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoanWidget(
+                          onLoanMade: (double loanAmount) {
+                            makeLoan(loanAmount);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                buildServiceCard(
+                  'Pagos',
+                  Icons.payment_rounded,
+                  'Realiza pagos y transferencias',
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Pagos(
+                          saldoDisponible: currentAmount,
+                          onPagoRealizado: (double pago, String descripcion) {
+                            makePayment(pago);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                buildServiceCard(
+                  'Retiros',
+                  Icons.logout_rounded,
+                  'Retira fondos a tu cuenta',
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RetirosScreen(
+                          onRetiroRealizado: (double retiroAmount) {
+                            setState(() {
+                              currentAmount -= retiroAmount;
+                              saveAmount();
+                              saveTransaction(
+                                  'Retiro de \$${retiroAmount.toStringAsFixed(2)}');
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                buildServiceCard(
+                  'Calculadoras Financieras',
+                  Icons.calculate_rounded,
+                  'Herramientas para tus finanzas',
+                  () {
+                    _onItemTapped(0);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildServiceCard(
+      String title, IconData icon, String description, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: lightYellow,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: primaryYellow,
+                size: 24,
+              ),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: darkColor,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.grey[400],
+              size: 16,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -416,27 +938,49 @@ Widget buildServiciosScreen() {
       BuildContext context, String title, IconData icon, int optionIndex) {
     return GestureDetector(
       onTap: () {
-        _onOptionTapped(optionIndex); // Change selected option
+        _onOptionTapped(optionIndex);
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: const BoxDecoration(
-              color: Color(0xFF232323),
-              shape: BoxShape.circle,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: Offset(0, 3),
             ),
-            child: Icon(icon, color: Colors.white, size: 30),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 14, color: Color(0xFF232323)),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: lightYellow,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Icon(
+                icon,
+                color: primaryYellow,
+                size: 25,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                color: darkColor,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

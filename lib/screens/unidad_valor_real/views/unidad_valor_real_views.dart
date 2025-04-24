@@ -5,58 +5,182 @@ class UnidadValorRealView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Definir colores para el tema de la aplicación
+    const Color primaryYellow = Color(0xFFFFD600);
+    const Color darkYellow = Color(0xFFC7A500);
+    const Color textDark = Color(0xFF212121);
+    const Color backgroundColor = Color(0xFFFFFDE7);
+
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text("Unidad de Valor Real"),
+        backgroundColor: primaryYellow,
+        elevation: 0,
+        title: const Text(
+          "Unidad de Valor Real",
+          style: TextStyle(
+            color: textDark,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Seleccione una opción",
-                style: TextStyle(fontSize: 20), // Tamaño de la fuente del texto
-              ),
-              const SizedBox(
-                  height: 24), // Separación entre el texto y los botones
-              SizedBox(
-                width: 250, // Ancho específico para todos los botones
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/unidadvalorreal/valor");
-                  },
-                  icon: const Icon(Icons.calculate),
-                  label: const Text("U.V.R Valor Especifico"),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 24),
-                    backgroundColor: const Color(0xFF232323), // Color del botón
-                    foregroundColor: Colors.white, // Color del texto e íconos
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: 250,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/unidadvalorreal/tabla");
-                  },
-                  icon: const Icon(Icons.view_timeline_rounded),
-                  label: const Text("U.V.R Tabla"),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 24),
-                    backgroundColor: const Color(0xFF232323),
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ),
-            ],
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [backgroundColor, Colors.white],
           ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Imagen o icono
+                Center(
+                  child: Container(
+                    height: 120,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: primaryYellow.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.currency_exchange,
+                      size: 60,
+                      color: darkYellow,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                // Texto principal
+                const Text(
+                  "Seleccione el tipo de cálculo UVR",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: textDark,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 8),
+
+                // Subtítulo
+                const Text(
+                  "Elija cómo desea calcular la Unidad de Valor Real",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 40),
+
+                // Botones con diseño mejorado
+                _buildOptionButton(
+                  context: context,
+                  icon: Icons.calculate,
+                  label: "UVR Valor Específico",
+                  description:
+                      "Calcule el valor UVR para un monto y fecha específicos",
+                  route: "/unidadvalorreal/valor",
+                  color: primaryYellow,
+                  textColor: textDark,
+                ),
+
+                const SizedBox(height: 16),
+
+                _buildOptionButton(
+                  context: context,
+                  icon: Icons.table_chart,
+                  label: "Tabla UVR",
+                  description: "Consulte la tabla histórica de valores UVR",
+                  route: "/unidadvalorreal/tabla",
+                  color: primaryYellow,
+                  textColor: textDark,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionButton({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required String description,
+    required String route,
+    required Color color,
+    required Color textColor,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.pushNamed(context, route);
+        },
+        style: ElevatedButton.styleFrom(
+          foregroundColor: textColor,
+          backgroundColor: color,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 0,
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 26),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: textColor.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16),
+          ],
         ),
       ),
     );

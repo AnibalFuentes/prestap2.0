@@ -5,71 +5,193 @@ class CompuestoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Manteniendo los mismos colores que SimpleView
+    const Color primaryYellow = Color(0xFFFFD600);
+    const Color darkYellow = Color(0xFFC7A500);
+    const Color textDark = Color(0xFF212121);
+    const Color backgroundColor = Color(0xFFFFFDE7);
+
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Seleccione una opción",
-                style: TextStyle(fontSize: 20), // Tamaño de la fuente del texto
-              ),
-              const SizedBox(
-                  height: 24), // Separación entre el texto y los botones
-              SizedBox(
-                width: 250, // Ancho específico para todos los botones
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/compuesto/montofuturo");
-                  },
-                  icon: const Icon(Icons.calculate),
-                  label: const Text("Monto Futuro"),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 24),
-                    backgroundColor: const Color(0xFF232323), // Color del botón
-                    foregroundColor: Colors.white, // Color del texto e íconos
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: 250,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/compuesto/tasainteres");
-                  },
-                  icon: const Icon(Icons.account_balance),
-                  label: const Text("Tasa Interes"),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 24),
-                    backgroundColor: const Color(0xFF232323),
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: 250,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/compuesto/tiempo");
-                  },
-                  icon: const Icon(Icons.access_time),
-                  label: const Text("Tiempo"),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 24),
-                    backgroundColor: const Color(0xFF232323),
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ),
-            ],
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        backgroundColor: primaryYellow,
+        elevation: 0,
+        title: const Text(
+          "Interés Compuesto",
+          style: TextStyle(
+            color: textDark,
+            fontWeight: FontWeight.bold,
           ),
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [backgroundColor, Colors.white],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Imagen o icono
+                Center(
+                  child: Container(
+                    height: 120,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: primaryYellow.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.trending_up, // Icono diferente para distinguir
+                      size: 60,
+                      color: darkYellow,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                // Texto principal
+                const Text(
+                  "Cálculos de Interés Compuesto",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: textDark,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 8),
+
+                // Subtítulo
+                const Text(
+                  "Seleccione qué variable desea calcular",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 40),
+
+                // Botones con diseño mejorado
+                _buildOptionButton(
+                  context: context,
+                  icon: Icons.attach_money,
+                  label: "Monto Futuro",
+                  description: "Calcula el valor futuro con interés compuesto",
+                  route: "/compuesto/montofuturo",
+                  color: primaryYellow,
+                  textColor: textDark,
+                ),
+
+                const SizedBox(height: 16),
+
+                _buildOptionButton(
+                  context: context,
+                  icon: Icons.percent,
+                  label: "Tasa de Interés",
+                  description: "Determina la tasa compuesta de crecimiento",
+                  route: "/compuesto/tasainteres",
+                  color: primaryYellow,
+                  textColor: textDark,
+                ),
+
+                const SizedBox(height: 16),
+
+                _buildOptionButton(
+                  context: context,
+                  icon: Icons.calendar_today,
+                  label: "Tiempo",
+                  description: "Calcula el tiempo necesario para tu meta",
+                  route: "/compuesto/tiempo",
+                  color: primaryYellow,
+                  textColor: textDark,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionButton({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required String description,
+    required String route,
+    required Color color,
+    required Color textColor,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.pushNamed(context, route);
+        },
+        style: ElevatedButton.styleFrom(
+          foregroundColor: textColor,
+          backgroundColor: color,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 0,
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 26),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: textColor.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16),
+          ],
         ),
       ),
     );
