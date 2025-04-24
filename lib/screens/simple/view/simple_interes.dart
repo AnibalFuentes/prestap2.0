@@ -9,31 +9,40 @@ class SimpleInteres extends StatefulWidget {
 }
 
 class _SimpleInteresState extends State<SimpleInteres> {
+  // Definición de colores para el tema
+  final Color primaryYellow = const Color(0xFFFFD600);
+  final Color darkYellow = const Color(0xFFC7A500);
+  final Color lightYellow = const Color(0xFFFFFDE7);
+  final Color textDark = const Color(0xFF212121);
+  final Color accentColor = const Color(0xFF6B4E00);
+
+  // Controladores para los campos principales
   final _futureAmountController = TextEditingController();
   final _initialCapitalController = TextEditingController();
-  final _interesGenradoController = TextEditingController();
-  final _timeController = TextEditingController();
+  final _interesGeneradoController = TextEditingController();
 
-  // Controllers para las fechas exactas
+  // Controladores para fechas exactas
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
 
-  // Controllers para día, mes, y año
+  // Controladores para tiempo manual
   final _dayController = TextEditingController();
   final _monthController = TextEditingController();
   final _yearController = TextEditingController();
 
   double? _interestRate;
-  bool _useExactDates = false; // Para alternar entre fechas exactas o manual
+  bool _useExactDates = false;
+  bool _showResult = false;
 
   void _calculateInterestRate() {
-    final futureAmount = double.tryParse(_futureAmountController.text);
+    if (_initialCapitalController.text.isEmpty) {
+      _showErrorSnackbar('Por favor ingrese el capital inicial');
+      return;
+    }
+
     final initialCapital = double.tryParse(_initialCapitalController.text);
-    final interesGenerado = double.tryParse(_interesGenradoController.text);
-    if (initialCapital == null) {
-      setState(() {
-        _interestRate = null;
-      });
+    if (initialCapital == null || initialCapital <= 0) {
+      _showErrorSnackbar('Capital inicial debe ser mayor a cero');
       return;
     }
 
@@ -43,33 +52,62 @@ class _SimpleInteresState extends State<SimpleInteres> {
       final startDate = DateTime.tryParse(_startDateController.text);
       final endDate = DateTime.tryParse(_endDateController.text);
 
-      if (startDate != null && endDate != null) {
-        final difference = endDate.difference(startDate).inDays;
-        timeInYears = difference / 365.0;
+      if (startDate == null || endDate == null) {
+        _showErrorSnackbar('Seleccione ambas fechas');
+        return;
       }
+
+      if (endDate.isBefore(startDate)) {
+        _showErrorSnackbar('La fecha final debe ser posterior a la inicial');
+        return;
+      }
+
+      final difference = endDate.difference(startDate).inDays;
+      timeInYears = difference / 365.0;
     } else {
       final days = int.tryParse(_dayController.text) ?? 0;
       final months = int.tryParse(_monthController.text) ?? 0;
       final years = int.tryParse(_yearController.text) ?? 0;
 
-      timeInYears = years + (months / 12) + (days / 360);
-      if (interesGenerado != null && initialCapital > 0) {
-        final i = (interesGenerado / (initialCapital * timeInYears)) *100;
-        print(i);
-        print("calcula aquiiiii" );
-         setState(() {
-        _interestRate = i as double?;
-      });
+      if (days == 0 && months == 0 && years == 0) {
+        _showErrorSnackbar('Ingrese al menos un valor de tiempo');
+        return;
       }
+
+      timeInYears = years + (months / 12) + (days / 360);
     }
 
-    if (timeInYears != null && timeInYears > 0 && futureAmount != null) {
+    final interesGenerado = double.tryParse(_interesGeneradoController.text);
+    final futureAmount = double.tryParse(_futureAmountController.text);
+
+    if (interesGenerado != null && interesGenerado > 0) {
+      final rate = (interesGenerado / (initialCapital * timeInYears)) * 100;
+      setState(() {
+        _interestRate = rate.toDouble();
+        _showResult = true;
+      });
+    } else if (futureAmount != null && futureAmount > 0) {
       final rate =
           (pow(futureAmount / initialCapital, 1 / timeInYears) - 1) * 100;
       setState(() {
         _interestRate = rate as double?;
+        _showResult = true;
       });
-    } 
+    } else {
+      _showErrorSnackbar('Ingrese monto futuro o interés generado');
+    }
+  }
+
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+    setState(() {
+      _showResult = false;
+    });
   }
 
   Future<void> _selectDate(
@@ -79,11 +117,22 @@ class _SimpleInteresState extends State<SimpleInteres> {
       initialDate: DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: primaryYellow,
+              onPrimary: textDark,
+              onSurface: textDark,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() {
-        controller.text =
-            "${picked.toLocal()}".split(' ')[0]; // Formatear la fecha
+        controller.text = "${picked.toLocal()}".split(' ')[0];
       });
     }
   }
@@ -91,70 +140,93 @@ class _SimpleInteresState extends State<SimpleInteres> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: lightYellow,
       appBar: AppBar(
-        title: const Text('Tasa de Interés'),
+        title: const Text(
+          "Cálculo de Tasa de Interés",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF212121),
+          ),
+        ),
+        backgroundColor: primaryYellow,
+        centerTitle: true,
+        elevation: 0,
+        iconTheme: IconThemeData(color: textDark),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [lightYellow, Colors.white],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField(_futureAmountController, 'Monto Futuro'),
+              _buildSectionTitle("Datos del Cálculo"),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: _initialCapitalController,
+                labelText: "Capital Inicial",
+                prefixIcon: Icons.account_balance_wallet,
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: _futureAmountController,
+                labelText: "Monto Futuro (Opcional)",
+                prefixIcon: Icons.trending_up,
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: _interesGeneradoController,
+                labelText: "Interés Generado (Opcional)",
+                prefixIcon: Icons.percent,
+                keyboardType: TextInputType.number,
+              ),
               const SizedBox(height: 24),
-              _buildTextField(_initialCapitalController, 'Capital Inicial'),
-              const SizedBox(height: 24),
-              _buildTextField(_interesGenradoController, 'interes generado'),
-              const SizedBox(height: 24),
-              _buildDateOptions(), // Muestra las opciones para ingresar fechas o tiempo
-              const SizedBox(height: 24),
+              _buildSectionTitle("Período de Tiempo"),
+              const SizedBox(height: 16),
+              _buildDateOptions(),
+              const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
+                height: 54,
                 child: ElevatedButton(
                   onPressed: _calculateInterestRate,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(20),
-                    backgroundColor: const Color(0xFF232323),
-                    foregroundColor: Colors.white,
+                    backgroundColor: primaryYellow,
+                    foregroundColor: textDark,
+                    elevation: 4,
+                    shadowColor: primaryYellow.withOpacity(0.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  child: const Text("Calcular Tasa de Interés"),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.calculate, color: textDark),
+                      const SizedBox(width: 8),
+                      Text(
+                        "CALCULAR TASA",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: textDark,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
-              if (_interestRate != null)
-                SizedBox(
-                  width: double.infinity,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF232323),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          const Icon(
-                            Icons.monetization_on,
-                            color: Colors.white,
-                            size: 26,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                              child: Center(
-                            child: Text(
-                              'Tasa de Interés: ${_interestRate!.toStringAsFixed(2)}%',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                          )),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              if (_showResult && _interestRate != null) _buildResultCard(),
             ],
           ),
         ),
@@ -162,76 +234,238 @@ class _SimpleInteresState extends State<SimpleInteres> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label) {
-    return TextField(
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData prefixIcon,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextFormField(
       controller: controller,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30.0),
+        labelText: labelText,
+        labelStyle: TextStyle(color: textDark.withOpacity(0.7)),
+        prefixIcon: Icon(prefixIcon, color: darkYellow),
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: primaryYellow, width: 2),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
-      keyboardType: TextInputType.number,
     );
   }
 
   Widget _buildDateOptions() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: primaryYellow, width: 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            const Text("¿Conoces las fechas exactas?"),
-            Switch(
+            SwitchListTile(
+              title: Text(
+                "¿Conoces las fechas exactas?",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: textDark,
+                ),
+              ),
               value: _useExactDates,
+              activeColor: darkYellow,
+              activeTrackColor: primaryYellow.withOpacity(0.5),
               onChanged: (bool value) {
                 setState(() {
                   _useExactDates = value;
                 });
               },
             ),
+            const SizedBox(height: 16),
+            if (_useExactDates)
+              Column(
+                children: [
+                  _buildDateField(
+                    controller: _startDateController,
+                    labelText: "Fecha de Inicio",
+                    onTap: () => _selectDate(context, _startDateController),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildDateField(
+                    controller: _endDateController,
+                    labelText: "Fecha de Finalización",
+                    onTap: () => _selectDate(context, _endDateController),
+                  ),
+                ],
+              )
+            else
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _dayController,
+                          labelText: "Días",
+                          prefixIcon: Icons.calendar_view_day,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _monthController,
+                          labelText: "Meses",
+                          prefixIcon: Icons.date_range,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _yearController,
+                          labelText: "Años",
+                          prefixIcon: Icons.calendar_today,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
           ],
         ),
-        const SizedBox(height: 16),
-        if (_useExactDates)
-          Column(
-            children: [
-              _buildDateField(_startDateController, "Fecha de Inicio",
-                  Icons.calendar_today),
-              const SizedBox(height: 24),
-              _buildDateField(
-                  _endDateController, "Fecha de Fin", Icons.calendar_today),
-            ],
-          )
-        else
-          Column(
-            children: [
-              _buildTextField(_dayController, 'Número de días'),
-              const SizedBox(height: 24),
-              _buildTextField(_monthController, 'Número de meses'),
-              const SizedBox(height: 24),
-              _buildTextField(_yearController, 'Número de años'),
-            ],
-          ),
-      ],
+      ),
     );
   }
 
-  Widget _buildDateField(
-      TextEditingController controller, String label, IconData icon) {
-    return TextField(
+  Widget _buildDateField({
+    required TextEditingController controller,
+    required String labelText,
+    required VoidCallback onTap,
+  }) {
+    return TextFormField(
       controller: controller,
       readOnly: true,
+      onTap: onTap,
       decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon), // Agregar ícono al inicio del campo de texto
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30.0),
+        labelText: labelText,
+        labelStyle: TextStyle(color: textDark.withOpacity(0.7)),
+        prefixIcon: Icon(Icons.calendar_month, color: darkYellow),
+        suffixIcon: Icon(Icons.arrow_drop_down, color: darkYellow),
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: primaryYellow, width: 2),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
-      onTap: () {
-        _selectDate(context, controller);
-      },
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4.0, bottom: 4.0),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 20,
+            decoration: BoxDecoration(
+              color: darkYellow,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: textDark,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultCard() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [darkYellow, primaryYellow],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: darkYellow.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Text(
+            "Resultado del cálculo",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: textDark.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.percent,
+                color: textDark,
+                size: 28,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                "${_interestRate!.toStringAsFixed(2)}%",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: textDark,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Tasa de interés calculada",
+            style: TextStyle(
+              fontSize: 14,
+              color: textDark.withOpacity(0.8),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
