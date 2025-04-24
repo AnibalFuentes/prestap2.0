@@ -80,4 +80,4 @@ flutter build apk --release
 --- 
 
 ✅ **¿Eres desarrollador?** ¡Contribuciones son bienvenidas!  
-🔗 **GitHub**: [github.com/prestapp](https://github.com/AnibalFuentes)
+🔗 **GitHub**: [github.com/AnibalFuentes/prestap2.0](https://github.com/AnibalFuentes/prestap2.0)
