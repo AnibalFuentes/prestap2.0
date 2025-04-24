@@ -1,6 +1,6 @@
 # **PrestApp - Tu Solución Financiera Completa**  
 
-![Banner de PrestApp](https://via.placeholder.com/1200x400/4CAF50/FFFFFF?text=PrestApp+-+Finanzas+Simplificadas) *(Reemplazar con imagen real de la app)*  
+[![Banner de PrestApp]([https://via.placeholder.com/1200x400/4CAF50/FFFFFF?text=PrestApp+-+Finanzas+Simplificadas) *(Reemplazar con imagen real de la app)*  ](https://cdn-icons-png.flaticon.com/128/1012/1012332.png](https://cdn-icons-png.flaticon.com/128/1012/1012332.png))
 
 **PrestApp** es una aplicación Android diseñada para **cálculos financieros avanzados, préstamos y gestión de inversiones**, con un enfoque en **usabilidad, seguridad y precisión en ingeniería económica**.  
 
