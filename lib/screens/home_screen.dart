@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   int _selectedOptionIndex = 0;
   double currentAmount = 0;
+  String currentNombre = "David Coronel";
   List<String> transactions = [];
 
   // Define PrestApp's brand colors
@@ -52,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       currentAmount = prefs.getDouble('amount') ?? widget.initialAmount;
+      currentNombre = prefs.getString('nombre') ?? widget.username;
     });
   }
 
@@ -247,6 +249,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                       color: darkColor,
                     ),
+                  ),
+                  Row(
+                    spacing: 5,
+                    children: [
+                      Text(
+                        'Hola',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: darkColor,
+                        ),
+                      ),
+                      Text(
+                        currentNombre,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: darkColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -34,8 +34,8 @@ import 'package:ingeconomica/screens/tir/view/tir_form.dart';
 
 var routes = <String, WidgetBuilder>{
   "/": (_) => const HomeScreen(
-        username: "",
-        initialAmount: 2000000,
+        username: "David Coronel",
+        initialAmount: 10000000,
       ),
   "/bonos": (_) => const Bonos(),
   "/login": (_) => const Login(),
@@ -51,10 +51,9 @@ var routes = <String, WidgetBuilder>{
   "/amortizacion": (_) => const AmortizacionView(),
   "/amortizacion/francesa": (_) => const Francesa(),
   "/amortizacion/alemana": (_) => const AlemanaView(),
-  "/amortizacion/americana": (_) =>  AmericaView(),
+  "/amortizacion/americana": (_) => AmericaView(),
   "/inflacion": (_) => const Inflacion(),
-  "/tir": (_)=>  TIRView(),
-
+  "/tir": (_) => TIRView(),
   "/aritmetico": (_) => const AritmeticoView(),
   "/aritmetico/valorpresente": (_) => const ValorPresente(),
   "/aritmetico/valorfuturo": (_) => const ValorFuturo(),
@@ -62,7 +61,6 @@ var routes = <String, WidgetBuilder>{
   "/aritmetico/cuotaespecifica": (_) => const CuotaEspecifica(),
   "/geometric/value": (_) => const GeometricValueCalculator(),
   "/geometric/series": (_) => const GeometricSeriesCalculator(),
-  
   "/unidadvalorreal": (_) => const UnidadValorRealView(),
   "/unidadvalorreal/valor": (_) => const UnidadValorReal(),
   "/unidadvalorreal/tabla": (_) => const UnidadValorRealTabla(),
