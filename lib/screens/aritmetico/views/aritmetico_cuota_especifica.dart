@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ingeconomica/screens/aritmetico/services/calculo_gradiente_aritmetico.dart';
-import 'package:ingeconomica/screens/aritmetico/views/widget.dart';
+import 'package:prestapp/screens/aritmetico/services/calculo_gradiente_aritmetico.dart';
+import 'package:prestapp/screens/aritmetico/views/widget.dart';
 
 class CuotaEspecifica extends StatefulWidget {
   const CuotaEspecifica({super.key});
